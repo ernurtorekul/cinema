@@ -1,0 +1,90 @@
+{
+  "pool_name": "Celebrity Talent Pool",
+  "description": "Pool of celebrities available for scene assignment",
+  "characters": [
+    {
+      "name": "Henry Cavill",
+      "traits": ["strong", "charismatic", "action-hero", "intense"],
+      "style": "rugged handsome, athletic build, short dark hair, strong jawline",
+      "typical_roles": ["warrior", "soldier", "leader", "hero", "action star"],
+      "age_range": "30-45"
+    },
+    {
+      "name": "Scarlett Johansson",
+      "traits": ["fierce", "intelligent", "mysterious", "confident"],
+      "style": "striking features, versatile looks, fit physique",
+      "typical_roles": ["spy", "warrior", "leader", "enigmatic figure", "anti-hero"],
+      "age_range": "25-40"
+    },
+    {
+      "name": "Idris Elba",
+      "traits": ["commanding", "authoritative", "cool", "powerful presence"],
+      "style": "tall, imposing, deep voice, sharp dresser",
+      "typical_roles": ["king", "general", "mentor", "villain", "authoritative figure"],
+      "age_range": "35-55"
+    },
+    {
+      "name": "Zendaya",
+      "traits": ["youthful", "expressive", "dynamic", "modern"],
+      "style": "versatile looks, slender, striking eyes, fashionable",
+      "typical_roles": ["young hero", "rebel", "tech-savvy", "modern warrior", "protagonist"],
+      "age_range": "18-30"
+    },
+    {
+      "name": "Keanu Reeves",
+      "traits": ["stoic", "skilled fighter", "determined", "relatable"],
+      "style": "aged but fit, calm demeanor, martial arts physique",
+      "typical_roles": ["lone warrior", "assassin", "chosen one", "reluctant hero"],
+      "age_range": "40-60"
+    },
+    {
+      "name": "Florence Pugh",
+      "traits": ["bold", "emotional", "intense", "versatile"],
+      "style": "expressive face, distinct features, compelling presence",
+      "typical_roles": ["warrior", "complex character", "tragic figure", "determined protagonist"],
+      "age_range": "20-35"
+    },
+    {
+      "name": "Jason Momoa",
+      "traits": ["massive", "intimidating", "wild", "powerful"],
+      "style": "very tall, muscular, long hair, beard, imposing presence",
+      "typical_roles": ["barbarian", "guardian", "monster", "king", "wild warrior"],
+      "age_range": "30-50"
+    },
+    {
+      "name": "Margot Robbie",
+      "traits": ["charismatic", "playful", "intense", "transformative"],
+      "style": "versatile beauty, expressive, physically fit",
+      "typical_roles": ["villain", "warrior", "complex anti-hero", "femme fatale"],
+      "age_range": "25-40"
+    },
+    {
+      "name": "Winston Duke",
+      "traits": ["gentle giant", "menacing when needed", "commanding", "dignified"],
+      "style": "very large, imposing, deep voice, dignified presence",
+      "typical_roles": ["protector", "warrior", "king", "guardian", "menacing force"],
+      "age_range": "30-50"
+    },
+    {
+      "name": "Anya Taylor-Joy",
+      "traits": ["ethereal", "intense", "calculating", "mysterious"],
+      "style": "striking features, blonde hair, intense gaze, slender",
+      "typical_roles": ["enigmatic figure", "calculating villain", "mystical character", "queen"],
+      "age_range": "20-30"
+    },
+    {
+      "name": "Tom Hardy",
+      "traits": ["intense", "transformative", "raw", "committed"],
+      "style": "versatile looks, method actor, physically transformative",
+      "typical_roles": ["anti-hero", "villain", "warrior", "complex character", "mercenary"],
+      "age_range": "35-50"
+    },
+    {
+      "name": "Lashana Lynch",
+      "traits": ["confident", "skilled", "authoritative", "cool"],
+      "style": "striking presence, fit, commanding, modern action star",
+      "typical_roles": ["agent", "warrior", "leader", "skilled fighter", "protagonist"],
+      "age_range": "30-45"
+    }
+  ]
+}

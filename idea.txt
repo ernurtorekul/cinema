@@ -1,0 +1,224 @@
+AI Video Generation Platform – Documentation
+1. Overview
+
+This platform automates AI-generated video creation using multiple specialized agents. It converts a user-provided scenario into structured image and video prompts, based on characters, cinematic rules, and production knowledge, and optionally produces a draft montage.
+
+Target AI model: Gemini Free version (text-to-image/video prompts).
+Input types:
+
+Scenario (text)
+
+Characters database (TXT)
+
+Production books/guides (PDF, TXT)
+
+Output types:
+
+Image prompts per scene
+
+Video prompts per scene
+
+Optional compiled draft video/trailer
+
+2. High-Level Pipeline
+Step 0: Project Type Selection
+
+User selects type: trailer, commercial, short film, TikTok video, etc.
+
+Defines constraints: scene length, style, pacing.
+
+Step 1: Scenario Input
+
+Input: Scenario text
+
+Function: Defines the story and goal of the video.
+
+Example: “A hero sneaks into the villain’s lair and discovers a glowing artifact.”
+
+Step 2: Scenario Analysis Agent
+
+Inputs: Scenario text
+
+Outputs:
+
+Scene breakdown (scene/subscene level)
+
+Key actions/events
+
+Timing suggestions per scene
+
+Optional enhancement suggestions (AI-proposed)
+
+Functions:
+
+Break down scenario into scenes
+
+Assign rough seconds per scene
+
+Detect missing beats or suggest cinematic improvements
+
+Step 3: Character Analysis Agent
+
+Inputs: Scene breakdown, character TXT database
+
+Outputs:
+
+Character assignments per scene
+
+Suggested traits, expressions, poses
+
+Character consistency map across scenes
+
+Functions:
+
+Match characters to scenario roles
+
+Suggest additional visual cues (emotion, costume, style)
+
+Ensure consistent representation across scenes
+
+Step 4: Source Material Agent
+
+Inputs: PDFs and text files containing animation, production, and cinematography rules
+
+Outputs:
+
+Scene-by-scene, second-by-second instructions
+
+Camera angles, movements, transitions, visual style cues
+
+Functions:
+
+Read and extract production guidance from source files
+
+Translate guidance into actionable steps for AI prompt generation
+
+Map timing of each scene and sub-scene
+
+Step 5: Prompt Generation Agent
+
+Inputs:
+
+Scene breakdown
+
+Characters assignments
+
+Source material guidance
+
+Outputs:
+
+Image prompts (backgrounds, characters, props)
+
+Video prompts (animations, camera movements, transitions)
+
+Functions:
+
+Generate detailed, Gemini-ready prompts
+
+Ensure visual/style consistency across scenes
+
+Optimize prompts for Gemini Free limitations (text length, content, etc.)
+
+when giving prompt it should also mention separately what parameters to use from listed:
+Camera:
+Red-v raptor, Sony Venice, max film camera, arri Alexa 35, arriflex 16sr, panavision millennium dxl 2
+lenses: 
+Lensbaby, hawk -v lite, laowa macro, canon k-35, panavision c-series, arri signature prime , cooke s4, petzval, helios, jdc xtal xpress, zeiss ultra prime
+Focal length:
+8, 14, 35, 50
+Apertures:
+F/1.4, f/4, f/11 
+
+
+
+Step 6: Montage/Compilation Agent (Optional)
+
+Inputs: Generated images/videos, scene breakdown
+
+Outputs: Draft video or trailer
+
+Functions:
+
+Combine generated media according to scene timing
+
+Apply simple transitions, text overlays, or soundtrack cues
+
+Produce preview-ready video for review
+
+Step 7: Output
+
+Image prompts per scene
+
+Video prompts per scene
+
+Optional draft video/trailer
+
+3. Agent Architecture
+Agent	Input	Output	Notes
+Scenario Analysis	Scenario text	Scene breakdown, timing, suggestions	Could include AI-generated enhancements
+Character Analysis	Scene breakdown, character TXT	Character assignment, traits	Ensure consistency across scenes
+Source Material	PDFs/TXT books	Scene instructions, camera, timing	Optional AI parsing library (PyPDF2, Tika)
+Prompt Generation	Scene + Characters + Source	Image & video prompts	Gemini-optimized prompts
+Montage	Generated media + scene info	Draft video	Optional; basic montage logic
+Orchestrator	All agents	Complete workflow	Manages order, data flow, iterative refinement
+4. Technical Suggestions
+
+Orchestration
+
+Use a lightweight workflow manager (Python + Async or Node.js with worker queues).
+
+Ensure each agent can be run independently for testing/debugging.
+
+File Handling
+
+Characters: read TXT database (name, traits, style)
+
+Source materials: parse PDFs/TXT with PyPDF2 or Apache Tika
+
+Cache extracted info to avoid repeated parsing
+
+Prompt Optimization
+
+Gemini Free version may have token/length limits → split scenes into smaller prompts
+
+Maintain a style guide in a separate JSON/TXT to keep prompts consistent
+
+Iterative Feedback
+
+Allow user to refine scenario or select alternative character suggestions
+
+Optional: implement loop where AI improves prompts based on previous outputs
+
+Scaling
+
+Start with 1–2 scenes, 1–2 characters, simple montage
+
+Gradually scale to multiple scenes and complex trailers
+
+5. MVP Implementation Suggestions
+
+First version:
+
+Scenario Analysis → Character Assignment → Prompt Generation
+
+Generate prompts for 1–2 scenes only
+
+Skip Montage initially
+
+After MVP:
+
+Add Montage Agent
+
+Include Source Material Agent parsing
+
+Support full trailers/commercials
+
+6. Notes
+
+System is modular and extendable
+
+Can support multiple project types in the future
+
+Focus on Gemini Free for initial prompt generation
+
+All outputs should be Gemini-ready for text-to-image/video generation
