@@ -1,17 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils.config import settings
-
-# Don't import routes yet - we'll add them after startup
-# from app.api.routes import projects
-
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
-    getattr(settings, 'frontend_url', "http://localhost:3000")
-]
+from app.api.routes import projects
 
 # Create FastAPI app
 app = FastAPI(
@@ -20,23 +10,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS - must be added BEFORE routes
+# Configure CORS - allow all origins for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
-
-@app.on_event("startup")
-async def startup_event():
-    """Import routes after startup to avoid blocking"""
-    from app.api.routes import projects
-    app.include_router(projects.router, prefix="/api/projects")
-    print("Routes loaded successfully")
+# Include routes
+app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
 
 
 @app.get("/")
@@ -51,12 +35,6 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
-
-
-@app.options("/{path:path}")
-async def options_handler(path: str):
-    """Handle OPTIONS requests for CORS"""
-    return {"status": "ok"}
 
 
 if __name__ == "__main__":
