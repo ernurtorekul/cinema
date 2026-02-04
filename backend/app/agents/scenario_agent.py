@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from app.services.llm_service import llm_service
 from app.services.supabase_service import get_supabase_admin, is_using_mock
+from app.utils.config import settings
 from uuid import uuid4
 
 
@@ -23,7 +24,8 @@ class ScenarioAgent:
         result = await llm_service.analyze_scenario(
             scenario=scenario,
             project_type=constraints.get("type", "trailer"),
-            constraints=constraints
+            constraints=constraints,
+            api_key=settings.gemini_scenario_agent_api_key
         )
 
         # LLM returns dict, extract scenes

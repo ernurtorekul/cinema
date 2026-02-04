@@ -1,5 +1,6 @@
 from typing import Dict, Any, List
 from app.services.llm_service import llm_service
+from app.utils.config import settings
 
 
 class SoundDesignAgent:
@@ -34,7 +35,8 @@ class SoundDesignAgent:
         # Run LLM for sound design (CALLS GEMINI)
         result = await llm_service.generate_sound_design(
             scenes=enriched_scenes,
-            instructions=[]
+            instructions=[],
+            api_key=settings.gemini_sound_design_agent_api_key
         )
 
         # Return result without DB storage in mock mode

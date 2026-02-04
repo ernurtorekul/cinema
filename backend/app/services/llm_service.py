@@ -9,10 +9,6 @@ import google.generativeai as genai
 import json
 from app.utils.config import settings
 
-# Configure Gemini API
-if hasattr(settings, 'gemini_api_key') and settings.gemini_api_key:
-    genai.configure(api_key=settings.gemini_api_key)
-
 # Available Gemini models (using latest stable)
 GEMINI_MODEL = "gemini-2.0-flash-lite"  # Using lite variant for better quota
 GEMINI_PRO_MODEL = "gemini-2.5-flash"  # Pro model (if available)
@@ -123,9 +119,11 @@ class LLMService:
             "aperture": random.choice(self.APERTURES)
         }
 
-    async def _generate_content(self, prompt: str) -> str:
-        """Generate content using Gemini"""
+    async def _generate_content(self, prompt: str, api_key: str) -> str:
+        """Generate content using Gemini with specific API key"""
         try:
+            # Configure with the specific API key for this call
+            genai.configure(api_key=api_key)
             model = genai.GenerativeModel(GEMINI_MODEL)
 
             def call_gemini():
@@ -142,7 +140,8 @@ class LLMService:
         self,
         scenario: str,
         project_type: str,
-        constraints: Dict[str, Any]
+        constraints: Dict[str, Any],
+        api_key: str
     ) -> Dict[str, Any]:
         """Analyze scenario and break down into scenes using cinematography principles"""
 
@@ -201,7 +200,7 @@ Return ONLY valid JSON:
 }}
 """
 
-        response = await self._generate_content(prompt)
+        response = await self._generate_content(prompt, api_key)
 
         # Try to parse JSON from the response
         try:
@@ -263,7 +262,8 @@ Return ONLY valid JSON:
     async def analyze_characters(
         self,
         scenes: List[Dict[str, Any]],
-        characters: List[Dict[str, Any]]
+        characters: List[Dict[str, Any]],
+        api_key: str
     ) -> Dict[str, Any]:
         """Intelligently assign characters to scenes based on traits, roles, and scene requirements"""
 
@@ -361,7 +361,7 @@ Return ONLY valid JSON in this format:
 }}
 """
 
-        response = await self._generate_content(prompt)
+        response = await self._generate_content(prompt, api_key)
 
         # Check if we got a quota error/fallback response
         if "API error" in response or "Scene generated (API error" in response:
@@ -406,7 +406,8 @@ Return ONLY valid JSON in this format:
     async def analyze_source_material(
         self,
         scenes: List[Dict[str, Any]],
-        source_rules: str
+        source_rules: str,
+        api_key: str
     ) -> Dict[str, Any]:
         """Map source material rules to scenes"""
 
@@ -444,7 +445,7 @@ Return ONLY valid JSON in this format:
 }}
 """
 
-        response = await self._generate_content(prompt)
+        response = await self._generate_content(prompt, api_key)
 
         try:
             json_match = self._extract_json(response)
@@ -460,7 +461,8 @@ Return ONLY valid JSON in this format:
         scenes: List[Dict[str, Any]],
         characters: List[Dict[str, Any]],
         instructions: List[Dict[str, Any]],
-        style_guide: Dict[str, Any]
+        style_guide: Dict[str, Any],
+        api_key: str
     ) -> Dict[str, Any]:
         """Generate professional image and video prompts using cinematography principles"""
 
@@ -530,7 +532,7 @@ Return ONLY valid JSON:
 }}
 """
 
-        response = await self._generate_content(prompt)
+        response = await self._generate_content(prompt, api_key)
 
         try:
             json_match = self._extract_json(response)
@@ -567,7 +569,8 @@ Return ONLY valid JSON:
     async def generate_sound_design(
         self,
         scenes: List[Dict[str, Any]],
-        instructions: List[Dict[str, Any]]
+        instructions: List[Dict[str, Any]],
+        api_key: str
     ) -> Dict[str, Any]:
         """Generate professional sound design using film audio principles"""
 
@@ -672,7 +675,7 @@ Return ONLY valid JSON:
 }}
 """
 
-        response = await self._generate_content(prompt)
+        response = await self._generate_content(prompt, api_key)
 
         try:
             json_match = self._extract_json(response)

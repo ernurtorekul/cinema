@@ -1,5 +1,6 @@
 from typing import Dict, Any, List
 from app.services.llm_service import llm_service
+from app.utils.config import settings
 
 
 class SourceAgent:
@@ -25,7 +26,8 @@ class SourceAgent:
         # Run LLM analysis for source material mapping (CALLS GEMINI)
         result = await llm_service.analyze_source_material(
             scenes=scenes,
-            source_rules=source_rules
+            source_rules=source_rules,
+            api_key=settings.gemini_source_agent_api_key
         )
 
         # Return result without DB storage in mock mode

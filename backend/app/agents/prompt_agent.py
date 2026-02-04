@@ -1,6 +1,7 @@
 from typing import Dict, Any, List, Optional
 from app.services.llm_service import llm_service
 from app.services.supabase_service import get_supabase_admin, is_using_mock
+from app.utils.config import settings
 
 
 class PromptAgent:
@@ -51,7 +52,8 @@ class PromptAgent:
             scenes=enriched_scenes,
             characters=[],
             instructions=[],
-            style_guide=style_guide
+            style_guide=style_guide,
+            api_key=settings.gemini_prompt_agent_api_key
         )
 
         # In mock mode, just return the result without DB storage

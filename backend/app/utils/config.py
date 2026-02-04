@@ -15,8 +15,12 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = "redis://localhost:6379/0"
 
-    # Gemini
-    gemini_api_key: str
+    # Gemini API Keys (separate key for each agent)
+    gemini_scenario_agent_api_key: str
+    gemini_character_agent_api_key: str
+    gemini_prompt_agent_api_key: str
+    gemini_sound_design_agent_api_key: str
+    gemini_source_agent_api_key: str
 
     # Audio APIs
     elevenlabs_api_key: str = ""

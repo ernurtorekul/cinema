@@ -1,5 +1,6 @@
 from typing import Dict, Any, List
 from app.services.llm_service import llm_service
+from app.utils.config import settings
 
 
 class CharacterAgent:
@@ -85,7 +86,8 @@ class CharacterAgent:
         # Run LLM analysis for intelligent character assignment
         result = await llm_service.analyze_characters(
             scenes=scenes,
-            characters=characters_for_llm
+            characters=characters_for_llm,
+            api_key=settings.gemini_character_agent_api_key
         )
 
         return result
