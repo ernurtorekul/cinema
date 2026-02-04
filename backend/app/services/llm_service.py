@@ -1,5 +1,5 @@
 """
-Service for interacting with LLMs (Gemini and OpenAI)
+Service for interacting with LLMs (Gemini, OpenAI, and Claude)
 """
 
 import os
@@ -7,6 +7,7 @@ import asyncio
 from typing import Optional, Dict, Any, List, Literal
 import google.generativeai as genai
 from openai import AsyncOpenAI
+import anthropic
 import json
 from app.utils.config import settings
 
@@ -154,6 +155,24 @@ class LLMService:
             print(f"OpenAI API error: {e}")
             # Return a fallback response if OpenAI fails
             return '{"scenes": [{"id": 1, "description": "Scene generated (API error - using fallback)", "actions": [], "duration": 10, "mood": "neutral"}]}'
+
+    async def _generate_content_claude(self, prompt: str, api_key: str, model: str = "claude-3-5-sonnet-20241022") -> str:
+        """Generate content using Claude with specific API key"""
+        try:
+            client = anthropic.AsyncAnthropic(api_key=api_key)
+            response = await client.messages.create(
+                model=model,
+                max_tokens=4096,
+                system="You are a professional cinematographer and visual effects artist expert in generating production-ready AI image and video prompts.",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.content[0].text
+        except Exception as e:
+            print(f"Claude API error: {e}")
+            # Return a fallback response if Claude fails
+            return '{"scene_prompts": [{"scene_id": 1, "image_prompts": [{"time": "0-5s", "prompt": "Cinematic scene"}]}]}'
 
     async def analyze_scenario(
         self,
@@ -491,9 +510,15 @@ Return ONLY valid JSON in this format:
         characters: List[Dict[str, Any]],
         instructions: List[Dict[str, Any]],
         style_guide: Dict[str, Any],
-        api_key: str
+        api_key: str,
+        use_claude: bool = False
     ) -> Dict[str, Any]:
-        """Generate professional image and video prompts using cinematography principles"""
+        """
+        Generate professional image and video prompts using cinematography principles
+
+        Args:
+            use_claude: If True, use Claude; if False, use Gemini
+        """
 
         camera_params = self._get_camera_params()
 
@@ -561,7 +586,7 @@ Return ONLY valid JSON:
 }}
 """
 
-        response = await self._generate_content(prompt, api_key)
+        response = await self._generate_content_claude(prompt, api_key) if use_claude else await self._generate_content(prompt, api_key)
 
         try:
             json_match = self._extract_json(response)
@@ -601,7 +626,7 @@ Return ONLY valid JSON:
         instructions: List[Dict[str, Any]],
         api_key: str
     ) -> Dict[str, Any]:
-        """Generate professional sound design using film audio principles"""
+        """Generate simple sound suggestions for scenes"""
 
         # Build scenes with mood information
         scenes_data = []
@@ -610,97 +635,32 @@ Return ONLY valid JSON:
                 "id": scene.get("id", scene.get("scene_number", 1)),
                 "description": scene.get("description", ""),
                 "mood": scene.get("mood", ""),
-                "duration": scene.get("duration", 10),
-                "actions": scene.get("actions", [])
+                "duration": scene.get("duration", 10)
             }
             scenes_data.append(scene_info)
 
-        prompt = f"""You are a professional sound designer and supervising sound editor. Create cinematic audio design for these scenes.
+        prompt = f"""You are a sound designer. Suggest appropriate sounds for these scenes.
 
 SCENES:
 {json.dumps(scenes_data, indent=2)}
 
-SOUND DESIGN PRINCIPLES:
-- MUSIC EMOTIONAL ARC: Match music energy to scene emotional journey
-- SONIC MOTIFS: Recurring themes for characters/ideas
-- PACING SYNC: Music rhythm should match visual cutting rhythm
-- SOUND BRIDGES: Use ambiences and SFX to smooth transitions
-- DYNAMIC RANGE: Use quiet-to-loud contrast for impact
-- FREQUENCY SPECTRUM: Balance bass, mids, and highs for clarity
+For EACH scene, provide simple sound suggestions:
+1. Music style/genre that fits the mood
+2. 2-3 key sound effects that would work well
+3. Any ambient/background sounds
 
-For EACH scene, provide:
-
-1. MUSIC COMPOSITION:
-- Style: Specific genre (e.g., "dark cinematic orchestral with electronic elements")
-- Tempo: BPM with pacing note
-- Instruments: Detailed instrumentation (specific instruments, not just "strings")
-- Energy level: 1-10 with emotional justification
-- Arc: How music evolves during the scene
-- Fade in/out: Precise timing
-- Reference: Similar music for search (e.g., "Hans Zimmer Dunkirk style")
-
-2. SOUND EFFECTS (layered, specific):
-- Timestamp: Exact moment
-- Sound type: Specific, descriptive (e.g., "metallic sword hiss, magical resonance")
-- Duration: Precise length
-- Volume: With context (e.g., "low under dialogue")
-- Variation: Performance note (e.g., "slow release, trailing tail")
-- Layering: What sounds work together
-
-3. AMBIENCE/BED:
-- Base: Environmental description
-- Elements: 3-5 specific sounds
-- Intensity: Low/Medium/High with purpose
-- Stereo placement: Where in the mix
-
-4. AUDIO CUES (transitional):
-- Timestamp: Exact moment
-- Type: fade_in, fade_out, transition_hit, accent, stinger, swell
-- Description: What this accomplishes narratively
+Keep it brief and practical.
 
 Return ONLY valid JSON:
 {{
-  "audio_design": [
+  "sound_suggestions": [
     {{
       "scene_id": 1,
-      "scene_duration": 10,
-      "music": {{
-        "style": "dark cinematic orchestral with deep synth bass",
-        "tempo_bpm": 80,
-        "instruments": ["solo cello melody", "low drones", "subtle percussion", "swelling strings"],
-        "energy_level": 4,
-        "arc": "starts quiet, builds to crest at 7s, fades to ambient",
-        "fade_in": "0-2s from silence",
-        "fade_out": "8-10s trailing dissonance",
-        "search_prompts": ["cinematic tension underscore", "mystery drone ambient"]
-      }},
-      "sound_effects": [
-        {{
-          "timestamp": "0:00",
-          "sound_type": "slow metallic resonance, magical sword awakening",
-          "duration": "3s",
-          "volume": "medium, building",
-          "variation": "low frequency pulse with high frequency overtones"
-        }}
-      ],
-      "ambience": {{
-        "base": "ancient stone cave sub-bass with distant water drip",
-        "elements": ["low 40Hz rumble", "occasional water drops (2Hz)", "subtle air movement"],
-        "intensity": "low, creating unease"
-      }},
-      "audio_cues": [
-        {{
-          "timestamp": "0:00",
-          "cue_type": "fade_in_music",
-          "description": "Music enters with ambient drone under sword discovery"
-        }}
-      ]
+      "music": "dark cinematic orchestral, building tension",
+      "sound_effects": ["low rumble", "sword metallic sound", "footsteps on stone"],
+      "ambience": "dripping water, distant echoes"
     }}
-  ],
-  "overall_audio_arc": {{
-    "energy_curve": "building to climax at scene 3",
-    "key_moments": [{{"time": "0:00", "event": "establishing mystery", "energy": 2}}]
-  }}
+  ]
 }}
 """
 
@@ -713,42 +673,16 @@ Return ONLY valid JSON:
         except Exception as e:
             print(f"Failed to parse audio response: {e}")
 
-        # Fallback audio design
+        # Fallback
         return {
-            "audio_design": [
+            "sound_suggestions": [
                 {
                     "scene_id": 1,
-                    "scene_duration": scenes[0].get("duration", 10),
-                    "music": {
-                        "style": "dark cinematic",
-                        "tempo_bpm": 90,
-                        "instruments": ["strings", "brass"],
-                        "energy_level": 5,
-                        "fade_in": "0-1s",
-                        "fade_out": "-1s",
-                        "search_prompts": ["cinematic tension"]
-                    },
-                    "sound_effects": [
-                        {
-                            "timestamp": "0:00",
-                            "sound_type": "ambient drone",
-                            "duration": "5s",
-                            "volume": "low",
-                            "variation": "atmospheric"
-                        }
-                    ],
-                    "ambience": {
-                        "base": scenes[0].get("mood", "dramatic") + " atmosphere",
-                        "elements": [],
-                        "intensity": "low"
-                    },
-                    "audio_cues": []
+                    "music": "cinematic tension",
+                    "sound_effects": ["ambient drone"],
+                    "ambience": "atmospheric"
                 }
-            ],
-            "overall_audio_arc": {
-                "energy_curve": "building",
-                "key_moments": []
-            }
+            ]
         }
 
 

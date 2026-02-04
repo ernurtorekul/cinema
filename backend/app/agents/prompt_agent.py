@@ -47,13 +47,14 @@ class PromptAgent:
                 }
             }
 
-        # Run LLM for prompt generation (CALLS GEMINI)
+        # Run LLM for prompt generation (CALLS CLAUDE)
         result = await llm_service.generate_prompts(
             scenes=enriched_scenes,
             characters=[],
             instructions=[],
             style_guide=style_guide,
-            api_key=settings.gemini_prompt_agent_api_key
+            api_key=settings.claude_prompt_agent_api_key,
+            use_claude=True
         )
 
         # In mock mode, just return the result without DB storage

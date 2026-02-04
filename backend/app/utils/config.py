@@ -18,9 +18,11 @@ class Settings(BaseSettings):
     # OpenAI API Keys
     openai_scenario_agent_api_key: str
 
+    # Claude API Keys
+    claude_prompt_agent_api_key: str
+
     # Gemini API Keys (separate key for each agent)
     gemini_character_agent_api_key: str
-    gemini_prompt_agent_api_key: str
     gemini_sound_design_agent_api_key: str
     gemini_source_agent_api_key: str
 
