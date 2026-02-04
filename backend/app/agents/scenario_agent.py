@@ -20,12 +20,13 @@ class ScenarioAgent:
         Returns:
             Scene analysis result
         """
-        # Run LLM analysis (calls Gemini)
+        # Run LLM analysis (calls OpenAI GPT)
         result = await llm_service.analyze_scenario(
             scenario=scenario,
             project_type=constraints.get("type", "trailer"),
             constraints=constraints,
-            api_key=settings.gemini_scenario_agent_api_key
+            api_key=settings.openai_scenario_agent_api_key,
+            use_openai=True
         )
 
         # LLM returns dict, extract scenes

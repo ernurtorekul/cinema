@@ -1,11 +1,12 @@
 """
-Service for interacting with Gemini AI
+Service for interacting with LLMs (Gemini and OpenAI)
 """
 
 import os
 import asyncio
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Literal
 import google.generativeai as genai
+from openai import AsyncOpenAI
 import json
 from app.utils.config import settings
 
@@ -136,14 +137,42 @@ class LLMService:
             # Return a fallback response if Gemini fails
             return '{"scenes": [{"id": 1, "description": "Scene generated (API error - using fallback)", "actions": [], "duration": 10, "mood": "neutral"}]}'
 
+    async def _generate_content_openai(self, prompt: str, api_key: str, model: str = "gpt-4o") -> str:
+        """Generate content using OpenAI with specific API key"""
+        try:
+            client = AsyncOpenAI(api_key=api_key)
+            response = await client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": "You are a professional film director and cinematographer expert in scene breakdown and cinematic analysis."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            print(f"OpenAI API error: {e}")
+            # Return a fallback response if OpenAI fails
+            return '{"scenes": [{"id": 1, "description": "Scene generated (API error - using fallback)", "actions": [], "duration": 10, "mood": "neutral"}]}'
+
     async def analyze_scenario(
         self,
         scenario: str,
         project_type: str,
         constraints: Dict[str, Any],
-        api_key: str
+        api_key: str,
+        use_openai: bool = True
     ) -> Dict[str, Any]:
-        """Analyze scenario and break down into scenes using cinematography principles"""
+        """
+        Analyze scenario and break down into scenes using cinematography principles
+
+        Args:
+            scenario: The scenario text to analyze
+            project_type: Type of project (trailer, scene, etc.)
+            constraints: Project constraints
+            api_key: API key for the LLM service
+            use_openai: If True, use OpenAI; if False, use Gemini
+        """
 
         # Determine scene count guidance
         scene_count_target = constraints.get('scene_count_target')
@@ -200,7 +229,7 @@ Return ONLY valid JSON:
 }}
 """
 
-        response = await self._generate_content(prompt, api_key)
+        response = await self._generate_content_openai(prompt, api_key) if use_openai else await self._generate_content(prompt, api_key)
 
         # Try to parse JSON from the response
         try:
@@ -210,7 +239,7 @@ Return ONLY valid JSON:
                 data = json.loads(json_match)
                 return data
         except Exception as e:
-            print(f"Failed to parse Gemini response: {e}")
+            print(f"Failed to parse LLM response: {e}")
 
         # Fallback if parsing fails
         return {
