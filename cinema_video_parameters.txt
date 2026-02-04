@@ -1,0 +1,11 @@
+Camera:
+Red-v raptor, Sony Venice, max film camera, arri Alexa 35, arriflex 16sr, panavision millennium dxl 2
+
+lenses: 
+Lensbaby, hawk -v lite, laowa macro, canon k-35, panavision c-series, arri signature prime , cooke s4, petzval, helios, jdc xtal xpress, zeiss ultra prime
+
+Focal length:
+8, 14, 35, 50
+
+Apertures:
+F/1.4, f/4, f/11 

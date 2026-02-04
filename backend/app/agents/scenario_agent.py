@@ -58,8 +58,11 @@ class ScenarioAgent:
                 })
 
         return {
+            "title": result.get("title", ""),
+            "overall_idea": result.get("overall_idea", ""),
             "scenes": scenes_data,
             "total_duration": result.get("total_duration", 30),
+            "scene_count": result.get("scene_count", len(scenes_data)),
             "raw_llm_result": result
         }
 

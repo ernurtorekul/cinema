@@ -349,23 +349,16 @@ Think like a Hollywood director: Each scene must have:
 
 Return ONLY valid JSON:
 {{
+  "title": "Generated title for the trailer (3-5 words, evocative)",
+  "overall_idea": "A 2-3 sentence summary of what this trailer is about - the core concept, emotional journey, and key hook. What is the audience promised?",
   "scenes": [
     {{
-      "id": 1,
-      "shot_type": "ESTABLISHING SHOT",
-      "description": "Cinematic description with subtext and visual impact",
-      "actions": ["visceral action 1", "visceral action 2", "visceral action 3", "visceral action 4"],
-      "duration": 15,
-      "camera": "Slow orbit followed by tracking shot",
-      "lighting": "Low key blue rim light with deep shadows",
-      "color": "Monochromatic blue with electric blue accents",
-      "vfx": "Glitch effects on edges, chromatic aberration",
-      "sound": "Low frequency build to sharp digital cutoff",
-      "timing": "0:00-0:15"
+      "scene_number": 1,
+      "description": "Simple, clear description of what happens in this scene - focus on the visual action and key moment. Keep it direct and visceral."
     }}
   ],
   "total_duration": {constraints.get('total_duration', 30)},
-  "pacing_notes": "Brief pacing description for overall trailer"
+  "scene_count": {scene_count_target if scene_count_target else 'auto'}
 }}
 """
 
@@ -807,45 +800,28 @@ TIMELINE INTEGRATION:
 
 Return ONLY valid JSON:
 {{
-  "scene_prompts": [
+  "title": "Trailer title (3-5 evocative words)",
+  "idea": "2-3 sentence summary of the trailer's concept and emotional journey",
+  "scenes": [
     {{
-      "scene_id": 1,
+      "scene_number": 1,
+      "duration": 15,
       "image_prompts": [
         {{
-          "time": "0-5s",
-          "prompt": "[Full detailed prompt with all specifications]",
-          "negative_prompt": "[Negative prompt]",
-          "technical_specs": {{
-            "camera": "ARRI Alexa 35",
-            "lens": "Panavision C-Series 50mm",
-            "focal_length": "50mm",
-            "aperture": "f/2.8",
-            "format": "2.39:1"
-          }},
-          "lighting": "Three-point with warm key (3200K) and cool fill (5600K)",
-          "color_grade": "Teal shadows with warm skin tones, crushing blacks",
-          "vfx": "Subtle chromatic aberration in highlights, volumetric fog",
-          "composition": "Rule of thirds, shallow depth of field"
+          "prompt": "Production-ready AI image prompt for this scene. Include technical specs (camera, lens, resolution), lighting, color grading, VFX, and subject description."
         }}
       ],
       "video_prompts": [
         {{
-          "time": "0-5s",
-          "prompt": "Slow dolly in toward subject while camera floats upward (compound movement)",
-          "camera_movement": "Dolly in + Crane up",
-          "speed": "Very slow push (5 seconds to move 2 meters)",
-          "subject_action": "Main subject turns slowly toward camera with micro-expressions changing",
-          "focus": "Single rack focus from background to subject's eyes",
-          "motion_blur": "Natural 24° shutter at 24fps",
-          "duration": "5 seconds",
-          "transition_out": "Cut to next scene",
-          "technical": {{
-            "camera": "ARRI Alexa 35",
-            "lens": "Panavision C-Series 50mm",
-            "stabilization": "Gimbal smooth"
-          }}
+          "prompt": "Production-ready AI video prompt for this scene. Include camera movement, speed, subject action, and technical details."
         }}
-      ]
+      ],
+      "video_parameters": {{
+        "camera": "One of: Red V-Raptor, Sony Venice, Max Film Camera, ARRI Alexa 35, Arriflex 16SR, Panavision Millennium DXL 2",
+        "lens": "One of: Lensbaby, Hawk V-Lite, Laowa Macro, Canon K-35, Panavision C-Series, ARRI Signature Prime, Cooke S4, Petzval, Helios, JDC Xtal Xpress, Zeiss Ultra Prime",
+        "focal_length": "One of: 8mm (ultra-wide), 14mm (wide), 35mm (normal), 50mm (normal)",
+        "aperture": "One of: f/1.4, f/4, f/11"
+      }}
     }}
   ]
 }}
