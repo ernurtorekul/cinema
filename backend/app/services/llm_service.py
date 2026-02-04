@@ -162,8 +162,16 @@ class LLMService:
             client = anthropic.AsyncAnthropic(api_key=api_key)
             response = await client.messages.create(
                 model=model,
-                max_tokens=4096,
-                system="You are a professional cinematographer and visual effects artist expert in generating production-ready AI image and video prompts.",
+                max_tokens=8192,
+                system="""You are a Hollywood-level visual effects supervisor and AI video prompt engineer with expertise in:
+- Blockbuster cinematography and visual language
+- Production-ready VFX breakdown and specifications
+- Professional color theory and grading techniques
+- AI video generation systems (Runway, Pika, Sora, Kling)
+- Technical camera equipment and lens characteristics
+- Sound design and audio post-production integration
+
+Your outputs must be production-ready, specific, and technically precise. Use professional cinematography vocabulary and avoid generic descriptions.""",
                 messages=[
                     {"role": "user", "content": prompt}
                 ]
@@ -207,44 +215,131 @@ class LLMService:
             "mixed": "Vary pacing - build tension then release"
         }.get(pacing, "Mixed pacing with variation")
 
-        prompt = f"""You are a professional film director and cinematographer. Analyze this scenario for a {project_type}.
+        prompt = f"""You are a Hollywood-level film director and cinematographer specializing in blockbuster trailers and high-concept visual storytelling. Analyze this scenario for a {project_type}.
 
 SCENARIO: {scenario}
 
-{self.CINEMATOGRAPHY_REFERENCE}
+PROFESSIONAL CINEMATOGRAPHY FRAMEWORK:
+
+=== SHOT TYPES & TERMINOLOGY ===
+Specify EXACT shot types for each scene:
+- ESTABLISHING SHOT (СУПЕР-ТОТАЛ): Extreme wide, sets context/location
+- SUPER-WIDE: Grand scale, multiple subjects/environment
+- WIDE SHOT (ОБЩИЙ ПЛАН): Full body + environment
+- MEDIUM SHOT (СРЕДНИЙ ПЛАН): Waist up, shows interaction
+- CLOSE-UP (КРУПНЫЙ ПЛАН): Face detail, emotional intensity
+- EXTREME CLOSE-UP: Eyes, mouth, specific detail
+- POV (СУБЪЕКТИВНАЯ КАМЕРА): Character's perspective
+- OVER-THE-SHOULDER: Conversation framing
+- TRACKING SHOT: Camera follows subject movement
+- CRANE SHOT: Camera rises/lowers for dramatic effect
+- DOLLY: Toward (intimacy/tension) or away (reveal/distance)
+- PAN: Reveals what's to the side
+- TILT: Reveals above/below (power dynamics)
+- HANDHELD: Documentary realism, unease
+- STROBE/FLASH FRAME: Jarring cut for impact
+- RACK FOCUS: Shift focus between foreground/background
+
+=== CAMERA MOVEMENT LANGUAGE ===
+- "Slow orbit" - camera circles subject
+- "Track with" - follow alongside
+- "Push in" - increase tension
+- "Pull back" - reveal context
+- "Whip pan" - sudden disorienting reveal
+- "Crane up" - diminish subject power
+- "Float" - dreamlike quality
+
+=== VISUAL EFFECTS SPECIFICATIONS ===
+Describe VFX with technical precision:
+- GLITCH EFFECTS: "Texture z-fighting", "vertices overlapping", "shimmering existence"
+- PHYSICS ANOMALIES: "Rain falling upward", "ocean frozen like glass", "smoke returning to source"
+- REALITY DISTORTION: "Gel lens refraction", "chromatic aberration", "holographic interference"
+- COLOR ANOMALIES: "Electric blue dome", "violet compression", "flat CGI overlay appearance"
+- MATERIAL PROPERTIES: "Solid plastic water", "liquid metal", "crystalline structures"
+
+=== TIMING & PACING ===
+- FAST CUTS: Action, excitement, chaos (0.5-2 seconds per shot)
+- SLOW CUTS: Contemplation, sadness, epic scale (5-15 seconds)
+- STROBING: Staccato rhythm for chaos (0.3-0.5 second flashes)
+- MATCH CUTS: Visual similarities between shots
+- HOLD: Extended shot for tension build
+
+=== SOUND DESIGN INTEGRATION ===
+Each scene should suggest:
+- DIEGETIC SOUNDS: What characters hear
+- NON-DIEGETIC: Score, atmosphere
+- SILENCE AS WEAPON: Create unease with absence of sound
+- AUDIO TRANSITIONS: Hard cuts, crossfades, sound bridges
+- SPECIFIC SFX: "Digital VZHUH (TV off)", "low frequency rumble", "piercing screech"
+
+=== COLOR THEORY & LIGHTING ===
+- THREE-POINT LIGHTING: Key, fill, back separation
+- LOW KEY: High contrast shadows (mystery, tension)
+- HIGH KEY: Even illumination (comedy, light mood)
+- PRACTICAL LIGHTS: Lamps, windows within scene
+- MOTIVATED LIGHTING: Light sources that make sense
+- COLOR PALETTES:
+  * TEAL & ORANGE: Classic cinematic contrast
+  * MONOCHROMATIC: Unified mood (blue isolation, red danger)
+  * COMPLEMENTARY: Opposite colors (tension/conflict)
+  * WARM: Nostalgia, comfort
+  * COOL: Detachment, sadness, mystery
+  * ELECTRIC/NEON: Synthetic, artificial, futuristic
+  * DESATURATED: Bleak, post-apocalyptic
+
+=== TRANSITIONS ===
+- CUT: Direct, jarring
+- DISSOLVE: Passage of time
+- FADE: Beginnings/endings
+- WIPE: Comic book style, temporal shifts
+- GLITCH CUT: Digital disruption, reality break
+- HARD CUT: Sudden, shocking
+- MATCH CUT: Thematic connection
 
 CONSTRAINTS:
 - Total duration: {constraints.get('total_duration', 'N/A')} seconds
-- Scene count: {'AI decide based on scenario complexity' if not scene_count_target else scene_count_target}
+- Scene count: {scene_count_target if scene_count_target else 'AI decide based on complexity (typically ' + str(constraints.get('scene_count_target', 3)) + ' scenes)'}
 - Pacing approach: {pacing_guidance}
 
-{scene_guidance}. For each scene provide:
+{scene_guidance}. For EACH scene, provide:
 
-1. DESCRIPTION: Vivid, cinematic description of what happens
-2. ACTIONS: 3-4 specific, actionable events (use strong verbs)
-3. DURATION: Appropriate length in seconds (considering total duration)
-4. MOOD: Primary emotional tone (e.g., "tense, mysterious with underlying threat")
-5. CAMERA: Suggested camera approach (e.g., "wide establishing shot, slow dolly in")
-6. LIGHTING: Lighting style (e.g., "low key blue moonlight for mystery")
-7. ENHANCEMENTS: Visual effects or color notes
+1. ID: Scene number
+2. SHOT TYPE: Specific shot type (from terminology above)
+3. DESCRIPTION: Cinematic description with clear visual action and emotional subtext
+4. ACTIONS: 4-5 specific, visceral events using strong verbs
+5. DURATION: Precise timing in seconds
+6. CAMERA: Exact movement + technical approach
+7. LIGHTING: Specific setup + mood
+8. COLOR: Color palette + grading approach
+9. VFX: Specific visual effects if any
+10. SOUND: Key sound elements + transitions
+11. TIMING: Timestamp (e.g., "0:00-0:15")
 
-Think like a director: Each scene should advance the story, create emotional impact, and use cinematic language.
+Think like a Hollywood director: Each scene must have:
+- VISUAL IMPACT: Memorable imagery
+- EMOTIONAL RESONANCE: Clear feeling
+- TECHNICAL PRECISION: Shootable specs
+- PACING RHYTHM: Fit within trailer structure
 
 Return ONLY valid JSON:
 {{
   "scenes": [
     {{
       "id": 1,
-      "description": "Cinematic description with clear visual and action",
-      "actions": ["specific action 1", "specific action 2", "specific action 3"],
-      "duration": 10,
-      "mood": "primary emotion, secondary feeling",
-      "camera": "camera movement and positioning",
-      "lighting": "lighting setup and mood",
-      "enhancements": "color, effects, visual notes"
+      "shot_type": "ESTABLISHING SHOT",
+      "description": "Cinematic description with subtext and visual impact",
+      "actions": ["visceral action 1", "visceral action 2", "visceral action 3", "visceral action 4"],
+      "duration": 15,
+      "camera": "Slow orbit followed by tracking shot",
+      "lighting": "Low key blue rim light with deep shadows",
+      "color": "Monochromatic blue with electric blue accents",
+      "vfx": "Glitch effects on edges, chromatic aberration",
+      "sound": "Low frequency build to sharp digital cutoff",
+      "timing": "0:00-0:15"
     }}
   ],
-  "total_duration": 30
+  "total_duration": {constraints.get('total_duration', 30)},
+  "pacing_notes": "Brief pacing description for overall trailer"
 }}
 """
 
@@ -356,7 +451,11 @@ Return ONLY valid JSON:
 
         must_include_str = f", ".join(must_include_names) if must_include_names else "None - AI decides"
 
-        prompt = f"""You are a casting director AI. Assign the BEST characters to each scene based on what makes narrative sense.
+        prompt = f"""You are a Hollywood casting director working on a blockbuster production. Assign the PERFECT celebrity/character matches to each scene based on:
+1. Scene mood and emotional requirements
+2. Character archetypes and star power
+3. Visual storytelling impact
+4. Narrative coherence and character consistency
 
 AVAILABLE CELEBRITIES/CHARACTERS:
 {chr(10).join(char_descriptions)}
@@ -366,44 +465,95 @@ CHARACTERS THAT MUST BE INCLUDED: {must_include_str}
 SCENES TO CAST:
 {chr(10).join(scene_descriptions)}
 
-INSTRUCTIONS:
-1. Analyze each scene's mood, action, and requirements
-2. Match characters whose TRAITS and TYPICAL ROLES fit each scene
-3. Prioritize "MUST INCLUDE" characters - give them important roles
-4. For intense/action scenes: choose characters with traits like "strong", "action-hero", "fierce", "intense"
-5. For mysterious/stealth scenes: choose characters with traits like "mysterious", "calculating", "cool"
-6. For emotional scenes: choose characters with traits like "emotional", "expressive"
-7. A scene can have 0-2 characters (don't force characters if they don't fit)
-8. Keep consistent casting - the same character should look similar across scenes
+=== CASTING DIRECTOR FRAMEWORK ===
 
-For each character assigned, provide:
-- Their name
-- Expression: Based on scene mood and character traits
-- Pose: Appropriate for the action (e.g., "crouching", "standing tall", "drawing weapon")
-- Action: What they're specifically doing in this scene
-- Costume notes: Based on their style + scene requirements
+CASTING PRINCIPLES:
+- STAR POWER: Recognizable faces create instant audience connection
+- ARCHETYPE MATCHING: Cast against type or deliberately subvert it
+- VISURAL DIVERSITY: Mix of ages, ethnicities, body types for visual interest
+- EMOTIONAL RANGE: Can the actor convey the required emotion?
+- ACTION CAPABILITY: For stunts, fight scenes, physical performance
+- SCENE CHEMISTRY: How characters interact visually
 
-Return ONLY valid JSON in this format:
+CHARACTER EXPRESSION DIRECTION:
+For each character in each scene, specify:
+- EYES: The window to emotion - focus, direction, pupils, lids, tears
+- SUBTEXT: What they're really feeling vs. what they show
+- MICRO-EXPRESSIONS: Brief flashes of true emotion
+- STILLNESS POWER: When lack of movement is more powerful
+- REACTION SHOTS: How they respond to other characters/events
+
+POSE & BODY LANGUAGE:
+- STANCE: Confident (square shoulders), uncertain (hunched), guarded (closed off)
+- HANDS: What they do with hands (fidget, clench, hide, expressive)
+- BREATHING: Heavy (exertion/anxiety), shallow (fear/controlled), held (tension)
+- WEIGHT: How gravity affects them (light/airy, heavy/grounded, dragging)
+- ORIENTATION: Open to world, closed off, turned away/away
+
+ACTION SPECIFICS:
+- VERBS: Use strong, specific action verbs (not generic "walks", "looks")
+- TIMING: When the action occurs within the scene
+- MOTIVATION: Why they're doing this (conscious and unconscious)
+- OBSTACLES: What's preventing them from getting what they want
+
+COSTUME & APPEARANCE CONSISTENCY:
+- BASE LOOK: Core costume elements that identify the character
+- EVOLUTION: How costume changes/appears across scenes (damage, dirt, changes)
+- CONTINUITY: Elements that must remain consistent
+- SCENE-SPECIFIC: Weathering, accessories appropriate to each scene
+
+CASTING DECISIONS:
+For each scene, assign 0-3 characters based on:
+- DRAMATIC FUNCTION: What role does this character serve in the story beat?
+- VISUAL COMPOSITION: How do they fit the frame and lighting?
+- PACING: More characters = slower, fewer = more intimate
+- POWER DYNAMICS: Who has agency in this scene?
+
+For each character assignment, provide:
+- name: Celebrity/character name
+- shot_type: How to frame them (CLOSE-UP, MEDIUM, WIDE)
+- expression: Specific eye/mouth/facial direction (e.g., "eyes narrow in calculation, mouth slight smile")
+- pose: Body language with specific stance (e.g., "warrior stance - feet shoulder-width, knees bent, weight forward")
+- action: Precise action verb + object/context (e.g., "drawing sword from scabbard slowly, blade catching light")
+- micro_expression: Subtle detail (e.g., "left eye twitches - concealed fear")
+- subtext: What they're really feeling (e.g., "confident exterior hiding terror")
+- costume_notes: Appearance details (e.g., "battle-worn armor with fresh slash marks on chest piece")
+- continuity: What must match other appearances (e.g., "same red cape as scene 1, now torn at hem")
+
+CONSISTENCY MAP tracks:
+- base_appearance: Core visual signature
+- costume_progression: How look evolves
+- emotional_arc: Character's journey
+- scenes_appearing: Where they appear
+
+Return ONLY valid JSON:
 {{
   "assignments": [
     {{
       "scene_id": 1,
+      "cast_reasoning": "This scene requires [X] to create [emotional effect]",
       "characters": [
         {{
           "name": "CharacterName",
-          "expression": "focused, wary",
-          "pose": "crouching behind cover",
-          "action": "scanning area for threats",
-          "costume_notes": "tactical gear matching their style, dust on clothes"
+          "shot_type": "CLOSE-UP (eyes)",
+          "expression": "eyes wide with terror, pupils pinpricks, mouth slightly open",
+          "pose": "crouched low, hands protecting head, shoulders up to ears",
+          "action": "scanning horizon frantically, head whipping left-right",
+          "micro_expression": "lower lip trembles for 0.5s - suppressed panic",
+          "subtext": "trying to maintain soldier composure while internally terrified",
+          "costume_notes": "tactical gear dust-covered, fresh scratch on left cheekpiece",
+          "lighting_note": "harsh side lighting creates deep shadow across face - half in shadow"
         }}
       ]
     }}
   ],
   "consistency_map": {{
     "CharacterName": {{
-      "base_traits": ["trait1", "trait2"],
-      "costume": "base costume description",
-      "appearances": [1, 3]
+      "base_appearance": "battle-worn soldier with tousled dark hair and haunted eyes",
+      "costume_progression": "Scene 1: Clean uniform → Scene 3: Dusty, torn at collar → Scene 5: Bloodied",
+      "emotional_arc": "Confident → Terrified → Desperate → Resigned",
+      "scenes_appearing": [1, 3, 5],
+      "recognizable_features": ["small scar above right eyebrow", "worn leather boots"]
     }}
   }}
 }}
@@ -535,31 +685,99 @@ Return ONLY valid JSON in this format:
             }
             scenes_data.append(scene_info)
 
-        prompt = f"""You are a professional cinematographer and visual effects artist. Generate production-ready AI image and video prompts.
-
-{self.CINEMATOGRAPHY_REFERENCE}
+        prompt = f"""You are a Hollywood visual effects supervisor and AI video prompt engineer. Generate production-ready prompts for AI video generation systems (Runway, Pika, Sora, Kling).
 
 SCENES TO GENERATE PROMPTS FOR:
 {json.dumps(scenes_data, indent=2)}
 
-For EACH scene, generate DETAILED prompts:
+=== IMAGE PROMPT SPECIFICATIONS ===
 
-IMAGE PROMPTS must include:
-1. Technical specs: 8K resolution, photorealistic, cinematic color grading
-2. Camera: {camera_params['camera']} with {camera_params['lens']} at {camera_params['focal_length']} {camera_params['aperture']}
-3. Subject: Detailed description of who/what is in frame
-4. Action: What is happening (use active verbs)
-5. Lighting: Specific lighting setup (motivated practicals, three-point, etc.)
-6. Color: Color grading approach (e.g., "teal shadows with warm skin tones", "monochromatic blue for isolation")
-7. Atmosphere: Environmental elements (fog, dust, particles)
-8. Composition: Frame arrangement (rule of thirds, center frame for power, etc.)
+For EACH scene, generate 1-2 detailed image prompts with:
 
-VIDEO PROMPTS must include:
-1. Camera movement: Specific motion (dolly in/out, tracking, crane, pan, tilt, handheld)
-2. Speed: Pace of movement (slow push for intimacy, fast whip for action)
-3. Subject action: What happens during the shot
-4. Duration: Length in seconds
-5. Technical: Camera, lens, aperture for continuity
+TECHNICAL LAYER:
+- Resolution: "8K", "16K", or "IMAX quality" for cinematic scope
+- Style: "Photorealistic", "Hyperrealistic", or "CGI feature film quality"
+- Render: "Ray-traced", "Path-traced", "Volumetric rendering"
+- Color Space: "ACES", "Rec.2020", "DCI-P3"
+
+CAMERA SPECS:
+- Camera: Specify from [RED V-Raptor 8K, Sony Venice 2, ARRI Alexa 35, ARRI Alexa 65, IMAX MSM II]
+- Lens: Specify from [Panavision Ultra Speed, Panavision C-Series, ARRI Signature Prime, Cooke S4, Zeiss Supreme, Angénieux Optimo]
+- Focal Length: [8mm ultra-wide, 14mm wide, 35mm normal, 50mm normal, 85mm portrait, 135mm telephoto]
+- Aperture: [f/1.2 ultra-shallow DOF, f/2.8 shallow DOF, f/4 medium DOF, f/11 deep focus]
+- Format: [2.39:1 anamorphic, 16:9, 2.35:1, IMAX 1.43:1]
+
+SUBJECT DESCRIPTION:
+- Primary subject with specific details (clothing, expression, pose, action)
+- Secondary elements (background, supporting characters, environmental details)
+- Textures and materials (fabric types, metal finishes, skin quality)
+- Scale indicators (for depth perception)
+
+LIGHTING SPECIFICATION:
+- Type: [Three-point, Natural light, Practical only, Motivated, Mixed]
+- Key Light: Source type, position, intensity, color temperature
+- Fill Light: Softness ratio, color tint (if any)
+- Back Light: Separation, rim effect, kickers
+- Special: [Volumetric fog, God rays, Lens flares, Caustics, Bioluminescence]
+
+COLOR GRADING:
+- Primary Palette: [Teal/Orange, Monochromatic blue, Desaturated war grade, Electric neon, Warm gold]
+- Secondary Color: Accent color for visual interest
+- Contrast: [Low key moody, High key bright, Crushing blacks, Blown highlights for effect]
+- Saturation: [Desaturated bleak, Oversaturated surreal, Natural, Selective color]
+- Treatment: [Bleach bypass, Day for night, Cross-processed, Color flash]
+
+VFX & POST:
+- Visual effects: [Glitch artifacts, Chromatic aberration, Lens distortion, Motion blur, Particle systems]
+- Atmosphere: [Fog, Smoke, Dust motes, Rain, Snow, Debris]
+- Quality enhancers: [Subsurface scattering, Ambient occlusion, Global illumination]
+
+COMPOSITION:
+- Rule: [Rule of thirds, Center frame dominance, Golden ratio, Symmetric balance]
+- Depth: [Foreground elements, Multiple planes, Shallow focus, Deep focus]
+- Framing: [Tight, Loose, Dutch angle, Canted frame, Foreground obstruction]
+- Negative space: Use for isolation, emptiness, anticipation
+
+NEGATIVE PROMPT:
+Technical: blurry, low quality, low resolution, pixelated, artifacts, compression, distorted
+Aesthetic: cartoon, anime, illustration, painting, drawing, sketch, 3D render, plastic, wax
+Lighting: flat lighting, even lighting, overexposed, underexposed, harsh shadows without purpose
+
+=== VIDEO PROMPT SPECIFICATIONS ===
+
+For EACH scene, generate 1-2 video prompts with:
+
+CAMERA MOVEMENT:
+- Type: [Static, Dolly in/out, Tracking, Crane up/down, Pan, Tilt, Whip pan, Handheld, Gimbal, FPV drone]
+- Speed: [Imperceptible slow, Slow push, Medium pace, Fast push, Whip rapid]
+- Acceleration: [Constant, Ease-in, Ease-out, Ease-in-out, Jerky/staccato]
+- Duration: Exact length in seconds
+
+SUBJECT ACTION:
+- Primary action: What main subject does (specific verbs)
+- Secondary action: Background/environmental movement
+- Reaction: How subject responds or changes
+- Timing: When actions occur within the shot
+
+CAMERA OPERAUTION:
+- Focus pulls: [Single rack, Multiple racks, Follow focus, Rack focus during action]
+- Exposure: [Consistent, Changing during shot, Exposure compensation]
+- White balance: [Consistent, Shift for effect]
+- Frame rate: [24fps cinematic, 48fps slow-mo, 60fps action, 120fps ultra slow-mo]
+
+TECHNICAL:
+- Motion blur: [Natural 24°, Reduced for staccato, Excessive for dreamlike]
+- Shutter angle: [180° normal, 90° reduced, 45° staccato, 360° motion blur heavy]
+- Stabilization: [Tripod locked, Gimbal smooth, Handheld organic, Intentional shake]
+
+TRANSITIONS:
+- In: [Cut in, Dissolve, Fade in, Wipe, Glitch cut, Flash frame]
+- Out: [Cut out, Dissolve, Fade out, Wipe, Glitch cut, Flash frame]
+- Bridge: [Sound bridge, Visual match, Color grade match, Action match]
+
+TIMELINE INTEGRATION:
+- Timecode: Exact position in overall sequence (e.g., "0:15-0:20")
+- Rhythm: How this fits in overall pacing (build, release, pause)
 
 Return ONLY valid JSON:
 {{
@@ -569,16 +787,37 @@ Return ONLY valid JSON:
       "image_prompts": [
         {{
           "time": "0-5s",
-          "prompt": "8K photorealistic cinematic shot, {camera_params['camera']} with {camera_params['lens']} at {camera_params['focal_length']} {camera_params['aperture']}. [DETAILED SCENE DESCRIPTION]. Three-point lighting with warm key and cool fill. Teal and orange color grading with high contrast. Atmospheric volumetric fog. Rule of thirds composition."
+          "prompt": "[Full detailed prompt with all specifications]",
+          "negative_prompt": "[Negative prompt]",
+          "technical_specs": {{
+            "camera": "ARRI Alexa 35",
+            "lens": "Panavision C-Series 50mm",
+            "focal_length": "50mm",
+            "aperture": "f/2.8",
+            "format": "2.39:1"
+          }},
+          "lighting": "Three-point with warm key (3200K) and cool fill (5600K)",
+          "color_grade": "Teal shadows with warm skin tones, crushing blacks",
+          "vfx": "Subtle chromatic aberration in highlights, volumetric fog",
+          "composition": "Rule of thirds, shallow depth of field"
         }}
       ],
       "video_prompts": [
         {{
           "time": "0-5s",
-          "prompt": "Slow dolly in toward subject, increasing tension and intimacy. Camera pushes in from wide shot to medium close-up over 5 seconds.",
-          "camera": "{camera_params['camera']}",
-          "lens": "{camera_params['lens']}",
-          "aperture": "{camera_params['aperture']}"
+          "prompt": "Slow dolly in toward subject while camera floats upward (compound movement)",
+          "camera_movement": "Dolly in + Crane up",
+          "speed": "Very slow push (5 seconds to move 2 meters)",
+          "subject_action": "Main subject turns slowly toward camera with micro-expressions changing",
+          "focus": "Single rack focus from background to subject's eyes",
+          "motion_blur": "Natural 24° shutter at 24fps",
+          "duration": "5 seconds",
+          "transition_out": "Cut to next scene",
+          "technical": {{
+            "camera": "ARRI Alexa 35",
+            "lens": "Panavision C-Series 50mm",
+            "stabilization": "Gimbal smooth"
+          }}
         }}
       ]
     }}
@@ -639,28 +878,145 @@ Return ONLY valid JSON:
             }
             scenes_data.append(scene_info)
 
-        prompt = f"""You are a sound designer. Suggest appropriate sounds for these scenes.
+        prompt = f"""You are a Hollywood supervising sound editor and Foley artist. Create professional sound design for these scenes.
 
 SCENES:
 {json.dumps(scenes_data, indent=2)}
 
-For EACH scene, provide simple sound suggestions:
-1. Music style/genre that fits the mood
-2. 2-3 key sound effects that would work well
-3. Any ambient/background sounds
+=== PROFESSIONAL SOUND DESIGN FRAMEWORK ===
 
-Keep it brief and practical.
+For EACH scene, provide:
+
+1. TIMELINE BREAKDOWN:
+   - Exact timestamps for key audio events
+   - Duration of each sound element
+   - Fade in/out timing (e.g., "0:00-0:02 from silence")
+
+2. MUSIC COMPOSITION:
+   - Style: Specific genre (e.g., "glitch electronic + orchestral dissonance", "minimalist horror synth", "epic orchestral with choir")
+   - Tempo: Exact BPM with pacing notes
+   - Instruments: Detailed instrumentation (specific instruments, not generic "strings")
+   - Key/Scale: Musical key for emotional effect (e.g., "D minor for tension", "E major for resolution")
+   - Energy level: 1-10 scale with emotional justification
+   - Arc: How music evolves during the scene (e.g., "starts at 60 BPM, stutters to 0, resumes at 120 BPM")
+   - Layering: What instruments play when
+   - Reference: Similar music for search (e.g., "Hans Zimmer Dunkirk", "Johann Johannsson Arrival", "Aphex Twin Windowlicker")
+
+3. SOUND EFFECTS (SPECIFIC & LAYERED):
+   For each SFX, provide:
+   - Timestamp: Exact moment (e.g., "0:02:150")
+   - Sound type: Specific, descriptive (e.g., "digital VZHUH like old TV turning off", "low frequency oscillator sweep 20-80Hz")
+   - Duration: Precise length (e.g., "0.5s sharp burst")
+   - Frequency: Low (20-200Hz), Mid (200-2000Hz), High (2kHz+), Full spectrum
+   - Volume: With context (e.g., "low under dialogue", "medium building", "hard hit at -3dB")
+   - Layering: What sounds work together
+   - Variation: Performance note (e.g., "slow release with trailing tail", "sharp attack with immediate cutoff")
+   - Processing: Effects applied (reverb, delay, distortion, filter)
+
+4. DIEGETIC SOUND (What characters hear):
+   - On-screen actions: Foley for what's visible
+   - Off-screen: Sounds from outside frame but within scene
+   - Room tone: Base ambient of the space
+
+5. NON-DIEGETIC SOUND (Score/atmosphere):
+   - Music underscore
+   - Atmosphere/Bed: Environmental base
+   - Synthetic elements: Electronic/atmospheric
+
+6. SILENCE AS WEAPON:
+   - When absence of sound creates tension
+   - Duration of silence before/after key moments
+   - What returns to break the silence
+
+7. AUDIO CUES (Transitional):
+   - Timestamp: Exact moment
+   - Type: fade_in_music, fade_out_music, transition_hit, accent, stinger, swell, cutoff
+   - Description: What this accomplishes narratively
+
+8. STEREO FIELD:
+   - Placement: Center, L/R, Surround, Height (Atmos)
+   - Movement: Static, Pan, Sweep
+
+9. FREQUENCY SPECTRUM:
+   - Low (20-200Hz): Sub, impact, rumble
+   - Low-Mid (200-500Hz): Warmth, body
+   - Mid (500-2kHz): Intelligibility, presence
+   - High-Mid (2kHz-6kHz): Definition, attack
+   - High (6kHz-20kHz): Air, sparkle, sibilance
 
 Return ONLY valid JSON:
 {{
-  "sound_suggestions": [
+  "sound_design": [
     {{
       "scene_id": 1,
-      "music": "dark cinematic orchestral, building tension",
-      "sound_effects": ["low rumble", "sword metallic sound", "footsteps on stone"],
-      "ambience": "dripping water, distant echoes"
+      "timeline": {{
+        "duration": 10,
+        "key_moments": [
+          {{"time": "0:00", "event": "Silence begins", "type": "silence"}},
+          {{"time": "0:02", "event": "Digital glitch sound", "type": "sfx"}},
+          {{"time": "0:05", "event": "Music enters", "type": "music_in"}}
+        ]
+      }},
+      "music": {{
+        "style": "Glitch electronic + orchestral dissonance",
+        "tempo_bpm": 60,
+        "key_scale": "D minor",
+        "instruments": ["synth bass (distorted)", "low frequency oscillator", "detuned strings", "digital artifact samples", "sub-bass drops"],
+        "energy_level": 3,
+        "energy_arc": "starts sparse, glitches at 0:05, builds to 7/10 at 0:08, sudden cutoff at 0:09",
+        "layering": "Bass and drone constant, glitches layer in mid-scene, strings swell toward end",
+        "fade_in": "0:05-0:07 gradual from silence",
+        "fade_out": "hard cutoff at 0:09 with digital artifact tail",
+        "reference": ["Hans Zimmer Dunkirk build", "Aphex Twin Windowlicker glitch elements"]
+      }},
+      "sound_effects": [
+        {{
+          "timestamp": "0:02.150",
+          "sound_type": "Digital VZHUH - like old TV power off, sharp and sudden",
+          "duration": "0.15s",
+          "frequency": "Full spectrum with emphasis on 2-8kHz",
+          "volume": "Medium-hard (-6dB)",
+          "variation": "Immediate attack, zero decay, hard cutoff",
+          "layering": "Plays in isolation with surrounding silence"
+        }},
+        {{
+          "timestamp": "0:05.000",
+          "sound_type": "Low frequency oscillator sweep, 20Hz to 80Hz over 2 seconds",
+          "duration": "2s",
+          "frequency": "Sub-bass (20-80Hz)",
+          "volume": "Building from -30dB to -12dB",
+          "variation": "Slow sweep with slight distortion"
+        }}
+      ],
+      "ambience": {{
+        "base": "Absolute silence - no room tone (creates unease/vacuum)",
+        "elements": ["no ambient until 0:05", "digital hum (rare) after music starts"],
+        "intensity": "Low (creates vacuum of sound)",
+        "stereo": "Center (monophonic unease)"
+      }},
+      "audio_cues": [
+        {{
+          "timestamp": "0:05",
+          "cue_type": "music_entry",
+          "description": "Music enters abruptly after silence, breaking the vacuum"
+        }},
+        {{
+          "timestamp": "0:09",
+          "cue_type": "hard_cutoff",
+          "description": "All sound cuts to silence for impact into next scene"
+        }}
+      ]
     }}
-  ]
+  ],
+  "overall_audio_arc": {{
+    "energy_curve": "Builds through scenes 1-3, drops at scene 4, builds to climax at scene 5",
+    "key_moments": [
+      {{"time": "0:00", "scene": 1, "event": "Silence establishes unease", "energy": 0}},
+      {{"time": "0:15", "scene": 2, "event": "Glitch dome appears", "energy": 8}},
+      {{"time": "0:45", "scene": 4, "event": "Time periods merge", "energy": 10}}
+    ],
+    "themes": ["Isolation", "Technology failure", "Time collapse", "Primal vs Modern conflict"]
+  }}
 }}
 """
 
