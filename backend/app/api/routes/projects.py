@@ -24,7 +24,7 @@ router = APIRouter(tags=["projects"])
 
 def is_mock_client(supabase) -> bool:
     """Check if the client is a mock"""
-    return isinstance(supabase, MockClient) or MOCK_MODE
+    return isinstance(supabase, MockClient) or is_using_mock()
 
 
 @router.post("")
@@ -65,24 +65,12 @@ async def create_project(project: ProjectCreate, supabase=Depends(get_supabase))
             detail=f"Failed to create project: {str(e)}. Check Supabase configuration or set MOCK_MODE=true in .env"
         )
 
-    logger.info(f"Creating project: {data}")
-
-    try:
-        response = supabase.table("projects").insert(data).execute()
-        logger.info(f"Project created: {response.data[0]}")
-        return JSONResponse(content=response.data[0], status_code=201)
-    except Exception as e:
-        logger.error(f"Failed to create project: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to create project: {str(e)}. Check Supabase configuration or set MOCK_MODE=true in .env"
-        )
-
 
 @router.get("/{project_id}")
 async def get_project(project_id: str, supabase=Depends(get_supabase)):
     """Get project details"""
-    if is_mock_client(supabase):
+    use_mock = is_mock_client(supabase)
+    if use_mock:
         if project_id not in mock_projects:
             raise HTTPException(status_code=404, detail="Project not found")
         return JSONResponse(content=mock_projects[project_id])
